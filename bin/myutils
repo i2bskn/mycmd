@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+# Temporary code until the first release
+$:.unshift(File.expand_path("../../lib", __FILE__))
+require "bundler/setup"
+# /Temp
+
+require "myutils"
+
+Myutils::CLI.start
