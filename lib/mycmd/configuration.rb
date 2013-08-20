@@ -27,24 +27,6 @@ module Mycmd
       reset
     end
 
-    def config_find(path = File.expand_path("."))
-      file = File.join(path, CONFIG_FILE)
-      if File.exists?(file)
-        file
-      else
-        if path == "/"
-          file = File.join(ENV["HOME"], CONFIG_FILE)
-          File.exists?(file) ? file : nil
-        else
-          config_find(File.expand_path("..", path))
-        end
-      end
-    end
-
-    def configure
-      yield self
-    end
-
     def merge(params)
       params.each do |k,v|
         self.send("#{k.to_s}=", v)
@@ -63,7 +45,7 @@ module Mycmd
     end
 
     def reset
-      @path = config_find
+      @path = Configuration.config_find
       if @path
         merge YAML.load_file(@path)
       else
@@ -77,6 +59,20 @@ module Mycmd
       def connect
         conf = Configuration.new
         conf.connect
+      end
+
+      def config_find(path = File.expand_path("."))
+        file = File.join(path, CONFIG_FILE)
+        if File.exists?(file)
+          file
+        else
+          if path == "/"
+            file = File.join(ENV["HOME"], CONFIG_FILE)
+            File.exists?(file) ? file : nil
+          else
+            config_find(File.expand_path("..", path))
+          end
+        end
       end
     end
   end

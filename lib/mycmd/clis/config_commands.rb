@@ -6,25 +6,22 @@ module Mycmd
 
     desc "which", "which will find config file"
     def which
-      conf = Configuration.new
-      path = conf.path.nil? ? "config not found" : conf.path
-      puts path
+      conf = Configuration.config_find
+      puts conf.nil? ? "config not found" : conf
     end
 
     desc "cat", "cat will print configuration"
     def cat
-      conf = Configuration.new
-      raise "config not found" if conf.path.nil?
-      open(conf.path, "r").each do |line|
-        puts line
-      end
+      conf = Configuration.config_find
+      raise "config not found" if conf.nil?
+      open(conf, "r").each {|line| puts line}
     end
 
     desc "edit", "edit will edit configuration"
     def edit
-      conf = Configuration.new
-      raise "config not found" if conf.path.nil?
-      system("#{ENV['EDITOR']} #{conf.path}")
+      conf = Configuration.config_find
+      raise "config not found" if conf.nil?
+      system("#{ENV['EDITOR']} #{conf}")
     end
   end
 end

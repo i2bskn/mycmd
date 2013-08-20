@@ -7,12 +7,8 @@ module Mycmd
     desc "search innodb_buffer_pool_size", "search will print settings"
     def search(keyword)
       client = Configuration.connect
-      result = client.query("SHOW GLOBAL VARIABLES LIKE \"%#{keyword}%\"")
-      if result.respond_to? :each
-        result.each(as: :array) do |row|
-          puts row.join("\t")
-        end
-      end
+      printer = Printer.new(client.query("SHOW GLOBAL VARIABLES LIKE \"%#{keyword}%\""))
+      printer.print
     end
   end
 end

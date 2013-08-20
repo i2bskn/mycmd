@@ -28,14 +28,9 @@ module Mycmd
 
     desc 'query "[SQL]"', "query will execute sql."
     def query(sql)
-      client = Configuration.new.connect
-      result = client.query(sql)
-      if result.respond_to? :each
-        puts result.fields.join("\t")
-        result.each(as: :array) do |row|
-          puts row.join("\t")
-        end
-      end
+      client = Configuration.connect
+      printer = Printer.new(client.query(sql), true)
+      printer.print
     end
   end
 end
