@@ -1,6 +1,6 @@
 # Mycmd
 
-TODO: Write a gem description
+MySQL command line tool.
 
 ## Installation
 
@@ -16,9 +16,41 @@ Or install it yourself as:
 
     $ gem install mycmd
 
+Create settings file:
+
+    $ touch ~/.mycmd.yml
+    $ mycmd config edit
+
 ## Usage
 
-TODO: Write usage instructions here
+Start sql shell:
+
+    $ mycmd console
+    mysql>
+
+Execute sql:
+
+    $ mycmd query "SELECT * FROM somedb.sometable"
+
+#### Config Commands
+
+Print current config file path:
+
+    $ mycmd config which
+
+Print current config:
+
+    $ mycmd config cat
+
+Edit config file:
+
+    $ mycmd config edit
+
+#### Setting Commands
+
+Search settings:
+
+    $ mycmd setting search innodb_buffer_pool_size
 
 ## Contributing
 
