@@ -6,6 +6,6 @@ $:.unshift(File.expand_path("../../lib", __FILE__))
 require "bundler/setup"
 # /Temp
 
-require "myutils"
+require "mycmd"
 
-Myutils::CLI.start
+Mycmd::CLI.start

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-module Myutils
+module Mycmd
   class CLI < Thor
   end
 end

@@ -12,7 +12,7 @@
 #   add_filter ".bundle"
 # end
 
-require "myutils"
+require "mycmd"
 
 RSpec.configure do |config|
   config.order = "random"

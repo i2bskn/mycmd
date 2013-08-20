@@ -1,4 +1,4 @@
 require "spec_helper"
 
-describe Myutils::CLI do 
+describe Mycmd::CLI do 
 end

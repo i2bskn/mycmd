@@ -1,8 +1,8 @@
 # coding: utf-8
 
-module Myutils
+module Mycmd
   class Configuration
-    CONFIG_FILE = ".myutils.yml"
+    CONFIG_FILE = ".mycmd.yml"
 
     VALID_OPTIONS_KEYS = [
       :host,

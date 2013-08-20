@@ -1,4 +1,4 @@
-# Myutils
+# Mycmd
 
 TODO: Write a gem description
 
@@ -6,7 +6,7 @@ TODO: Write a gem description
 
 Add this line to your application's Gemfile:
 
-    gem 'myutils'
+    gem 'mycmd'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install myutils
+    $ gem install mycmd
 
 ## Usage
 
