@@ -72,5 +72,12 @@ module Mycmd
         self.username = "root"
       end
     end
+
+    class << self
+      def connect
+        conf = Configuration.new
+        conf.connect
+      end
+    end
   end
 end

@@ -1,11 +1,13 @@
 # coding: utf-8
 
 require "mycmd/clis/config_commands"
+require "mycmd/clis/setting_commands"
 
 module Mycmd
   class CLI < Thor
     default_command :console
     register(ConfigCommands, "config", "config [COMMAND]", "commands for config")
+    register(SettingCommands, "setting", "setting [COMMAND]", "commands for setting")
 
     desc "console", "console will start sql shell."
     def console
