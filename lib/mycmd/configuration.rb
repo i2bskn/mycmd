@@ -21,6 +21,7 @@ module Mycmd
     ].freeze
 
     attr_accessor *VALID_OPTIONS_KEYS
+    attr_reader :path
 
     def initialize
       reset
@@ -62,9 +63,9 @@ module Mycmd
     end
 
     def reset
-      file = config_find
-      if file
-        merge YAML.load_file(file)
+      @path = config_find
+      if @path
+        merge YAML.load_file(@path)
       else
         self.host = "localhost"
         self.port = 3306
