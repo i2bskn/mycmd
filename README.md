@@ -1,5 +1,6 @@
 # Mycmd
 
+[![Gem Version](https://badge.fury.io/rb/mycmd.png)](http://badge.fury.io/rb/mycmd)
 [![Code Climate](https://codeclimate.com/github/i2bskn/mycmd.png)](https://codeclimate.com/github/i2bskn/mycmd)
 
 MySQL command line tool.
