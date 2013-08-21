@@ -28,6 +28,7 @@ module Mycmd
     end
 
     def merge(params)
+      default
       params.each do |k,v|
         self.send("#{k.to_s}=", v)
       end
@@ -49,10 +50,14 @@ module Mycmd
       if @path
         merge YAML.load_file(@path)
       else
-        self.host = "localhost"
-        self.port = 3306
-        self.username = "root"
+        default
       end
+    end
+
+    def default
+      self.host = "localhost"
+      self.port = 3306
+      self.username = "root"
     end
 
     class << self
