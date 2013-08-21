@@ -21,6 +21,7 @@ module Mycmd
     ].freeze
 
     attr_accessor *VALID_OPTIONS_KEYS
+    attr_accessor :tasks
     attr_reader :path
 
     def initialize

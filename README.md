@@ -37,6 +37,8 @@ host: localhost
 port: 3306
 username: root
 password: secret
+tasks:
+  slow: SELECT start_time, db, query_time, rows_sent, sql_text FROM mysql.slow_log WHERE db != 'mysql' ORDER BY start_time DESC LIMIT 30
 ```
 
 ## Usage
@@ -49,6 +51,7 @@ Start sql shell:
 Execute sql:
 
     $ mycmd query "SELECT * FROM somedb.sometable"
+    $ mycmd tasks slow
 
 #### Config Commands
 

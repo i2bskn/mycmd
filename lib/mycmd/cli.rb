@@ -32,5 +32,13 @@ module Mycmd
       printer = Printer.new(client.query(sql), true)
       printer.print
     end
+
+    desc 'tasks [TASK NAME]', "tasks will execute register sql."
+    def tasks(task)
+      config = Configuration.new
+      client = config.connect
+      printer = Printer.new(client.query(config.tasks[task.to_s]), true)
+      printer.print
+    end
   end
 end
