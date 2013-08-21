@@ -1,6 +1,8 @@
 # Mycmd
 
 [![Gem Version](https://badge.fury.io/rb/mycmd.png)](http://badge.fury.io/rb/mycmd)
+[![Build Status](https://travis-ci.org/i2bskn/mycmd.png?branch=master)](https://travis-ci.org/i2bskn/mycmd)
+[![Coverage Status](https://coveralls.io/repos/i2bskn/mycmd/badge.png)](https://coveralls.io/r/i2bskn/mycmd)
 [![Code Climate](https://codeclimate.com/github/i2bskn/mycmd.png)](https://codeclimate.com/github/i2bskn/mycmd)
 
 MySQL command line tool.
@@ -25,6 +27,17 @@ Create settings file:
 
     $ touch ~/.mycmd.yml
     $ mycmd config edit
+
+Setting is the same as the argument of `Mysql2::Client.new`.
+
+Sample settings:
+
+```
+host: localhost
+port: 3306
+username: root
+password: secret
+```
 
 ## Usage
 
