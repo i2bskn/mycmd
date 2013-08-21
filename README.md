@@ -1,5 +1,7 @@
 # Mycmd
 
+[![Code Climate](https://codeclimate.com/github/i2bskn/mycmd.png)](https://codeclimate.com/github/i2bskn/mycmd)
+
 MySQL command line tool.
 
 ## Installation
