@@ -1,8 +1,8 @@
 # coding: utf-8
 
 module Mycmd
-  class SettingCommands < Thor
-    namespace :setting
+  class SettingsCommands < Thor
+    namespace :settings
 
     desc "search innodb_buffer_pool_size", "search will print settings"
     def search(keyword)

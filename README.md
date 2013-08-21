@@ -19,6 +19,8 @@ Or install it yourself as:
 
     $ gem install mycmd
 
+## Settings
+
 Create settings file:
 
     $ touch ~/.mycmd.yml
@@ -53,7 +55,7 @@ Edit config file:
 
 Search settings:
 
-    $ mycmd setting search innodb_buffer_pool_size
+    $ mycmd settings search innodb_buffer_pool_size
 
 ## Contributing
 
