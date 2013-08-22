@@ -12,4 +12,27 @@ module SpecHelpers
     end
     result
   end
+
+  def create_result
+    Result.new
+  end
+
+  class Result
+    attr_reader :fields
+
+    def initialize
+      @data = [
+        ["first", "one"],
+        ["second", "two"],
+        ["third", "three"]
+      ]
+      @fields = ["order", "number"]
+    end
+
+    def each(params={})
+      @data.each do |d|
+        yield(d)
+      end
+    end
+  end
 end

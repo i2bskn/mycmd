@@ -1,25 +1,8 @@
 require "spec_helper"
 
 describe Mycmd::Printer do
-  class Result
-    attr_reader :fields
-    def initialize
-      @data = [
-        ["first", "one"],
-        ["second", "two"],
-        ["third", "three"]
-      ]
-      @fields = ["order", "number"]
-    end
-    def each(params={})
-      @data.each do |d|
-        yield(d)
-      end
-    end
-  end
-
   let(:result) do
-    Result.new
+    create_result
   end
 
   let(:printer) {Mycmd::Printer.new(result)}
@@ -58,7 +41,7 @@ describe Mycmd::Printer do
 
     it "should not call #print_line if each method not found" do
       Mycmd::Printer.any_instance.should_not_receive(:print_line)
-      Result.any_instance.should_receive(:respond_to?).and_return(false)
+      result.should_receive(:respond_to?).and_return(false)
       expect{
         printer.print
       }.not_to raise_error
