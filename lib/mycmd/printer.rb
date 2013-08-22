@@ -2,6 +2,8 @@
 
 module Mycmd
   class Printer
+    attr_accessor :result, :header, :width
+    
     def initialize(result, header=false)
       @result = result
       @header = header
