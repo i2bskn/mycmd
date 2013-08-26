@@ -1,6 +1,6 @@
 require "stringio"
 
-module SpecHelpers
+module SpecUtils
   def capture(stream)
     begin
       stream = stream.to_s
