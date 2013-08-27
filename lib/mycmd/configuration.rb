@@ -67,6 +67,16 @@ module Mycmd
         conf.connect
       end
 
+      def get_variables
+        sql = "SELECT * FROM INFORMATION_SCHEMA.GLOBAL_VARIABLES"
+        client = self.connect
+        variables = {}
+        client.query(sql).each do |row|
+          variables.store(row["VARIABLE_NAME"].downcase.to_sym, row["VARIABLE_VALUE"])
+        end
+        variables
+      end
+
       def config_find(path = File.expand_path("."))
         file = File.join(path, CONFIG_FILE)
         if File.exists?(file)

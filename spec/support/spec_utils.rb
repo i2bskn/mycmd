@@ -29,6 +29,10 @@ module SpecUtils
       @fields = ["order", "number"]
     end
 
+    def first
+      @data.first
+    end
+
     def each(params={})
       @data.each do |d|
         yield(d)

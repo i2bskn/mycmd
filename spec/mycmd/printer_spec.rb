@@ -1,10 +1,7 @@
 require "spec_helper"
 
 describe Mycmd::Printer do
-  let(:result) do
-    create_result
-  end
-
+  let(:result) {create_result}
   let(:printer) {Mycmd::Printer.new(result)}
 
   describe "#initialize" do
@@ -19,6 +16,12 @@ describe Mycmd::Printer do
     it "should set specified header flug" do
       printer = Mycmd::Printer.new(result, true)
       expect(printer.header).to be_true
+    end
+
+    it "should generate exception if not specified arguments" do
+      expect {
+        Mycmd::Printer.new
+      }.to raise_error
     end
   end
 
@@ -48,8 +51,24 @@ describe Mycmd::Printer do
     end
   end
 
+  describe "#result_to_array" do
+    it "should convert to array from result" do
+      expect(printer.send(:result_to_array, create_result)).to eq([
+        ["first", "one"],
+        ["second", "two"],
+        ["third", "three"]
+      ])
+    end
+  end
+
   describe "#set_width" do
     it "should set max length" do
+      printer.send(:set_width)
+      expect(printer.width).to eq([6,5])
+    end
+
+    it "should hoge" do
+      printer.header = result.fields
       printer.send(:set_width)
       expect(printer.width).to eq([6,6])
     end
@@ -58,6 +77,16 @@ describe Mycmd::Printer do
   describe "#print_line" do
     it "should print line" do
       expect(capture(:stdout){printer.print}).not_to be_nil
+    end
+  end
+
+  describe "#print_title" do
+    it "should print title" do
+      expect(capture(:stdout){Mycmd::Printer.print_title("title")}).not_to be_nil
+    end
+
+    it "should print empty line" do
+      expect(capture(:stdout){Mycmd::Printer.print_title("title", true)}).to match(/^\n/)
     end
   end
 end

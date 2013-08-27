@@ -87,7 +87,7 @@ describe Mycmd::Configuration do
     end
   end
 
-  describe ".connect" do
+  describe ".#connect" do
     it "should call #connect" do
       mock = double("configuration mock")
       mock.should_receive(:connect)
@@ -98,7 +98,34 @@ describe Mycmd::Configuration do
     end
   end
 
-  describe ".config_find" do
+  describe ".#get_variables" do
+    let(:conn_mock) {double("connection mock")}
+
+    before do
+      conn_mock.stub(:query).and_return([{"VARIABLE_NAME" => "innodb_buffer_pool_size", "VARIABLE_VALUE" => "268435456"}])
+      Mycmd::Configuration.stub(:connect).and_return(conn_mock)
+    end
+
+    after do
+      expect {
+        Mycmd::Configuration.get_variables
+      }.not_to raise_error
+    end
+
+    it "should call .#connect" do
+      Mycmd::Configuration.should_receive(:connect).and_return(conn_mock)
+    end
+
+    it "should call Mysql2::Client#query" do
+      conn_mock.should_receive(:query).and_return([])
+    end
+
+    it "should return variables" do
+      expect(Mycmd::Configuration.get_variables).to eq({innodb_buffer_pool_size: "268435456"})
+    end
+  end
+
+  describe ".#config_find" do
     let(:path) {Mycmd::Configuration.config_find(home_dir)}
 
     it "returns config path" do
