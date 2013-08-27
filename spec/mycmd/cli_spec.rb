@@ -5,6 +5,27 @@ describe Mycmd::CLI do
   let(:printer_mock) {double("printer mock").as_null_object}
 
   describe "#console" do
+    before do
+      Mycmd::Configuration.stub(:config_find).and_return(nil)
+    end
+
+    it "should call Kernel.system" do
+      conf = Mycmd::Configuration.new
+      conf.password = "secret"
+      conf.database = "test"
+      Mycmd::Configuration.should_receive(:new).and_return(conf)
+      Kernel.should_receive(:system).exactly(2).and_return(true)
+      expect {
+        Mycmd::CLI.start(["console"])
+      }.not_to raise_error
+    end
+
+    it "should generate exception if mysql command not found" do
+      Kernel.should_receive(:system).and_return(false)
+      expect {
+        Mycmd::CLI.start(["console"])
+      }.to raise_error
+    end
   end
 
   describe "#query" do

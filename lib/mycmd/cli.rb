@@ -11,7 +11,7 @@ module Mycmd
 
     desc "console", "console will start sql shell."
     def console
-      raise "mysql not found" unless system("which mysql > /dev/null")
+      raise "mysql not found" unless Kernel.system("which mysql > /dev/null")
       conf = Configuration.new
       cmd = conf.to_hash.inject(["mysql"]) do |c,(k,v)|
         case k
@@ -23,7 +23,7 @@ module Mycmd
         end
       end
 
-      system(cmd.join(" "))
+      Kernel.system(cmd.join(" "))
     end
 
     desc 'query "[SQL]"', "query will execute sql."

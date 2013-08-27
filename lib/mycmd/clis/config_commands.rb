@@ -14,14 +14,14 @@ module Mycmd
     def cat
       conf = Configuration.config_find
       raise "config not found" if conf.nil?
-      open(conf, "r").each {|line| puts line}
+      File.open(conf, "r").each {|line| puts line}
     end
 
     desc "edit", "edit will edit configuration"
     def edit
       conf = Configuration.config_find
       raise "config not found" if conf.nil?
-      system("#{ENV['EDITOR']} #{conf}")
+      Kernel.system("#{ENV['EDITOR']} #{conf}")
     end
   end
 end

@@ -34,7 +34,7 @@ describe Mycmd::ConfigCommands do
   describe "#edit" do
     it "should execute edit command" do
       Mycmd::Configuration.stub(:config_find).and_return(".mycmd.yml")
-      Mycmd::ConfigCommands.any_instance.should_receive(:system)
+      Kernel.should_receive(:system).with("#{ENV['EDITOR']} .mycmd.yml")
       Mycmd::ConfigCommands.start(["edit"])
     end
 
@@ -47,7 +47,7 @@ describe Mycmd::ConfigCommands do
 
     it "should call Configuration.config_find" do
       Mycmd::Configuration.should_receive(:config_find).and_return(".mycmd.yml")
-      Mycmd::ConfigCommands.any_instance.stub(:system)
+      Kernel.stub(:system)
       Mycmd::ConfigCommands.start(["edit"])
     end
   end
@@ -55,7 +55,7 @@ describe Mycmd::ConfigCommands do
   describe "#cat" do
     it "should call Configuration.config_find" do
       Mycmd::Configuration.should_receive(:config_find).and_return(".mycmd.yml")
-      Mycmd::ConfigCommands.any_instance.stub(:open).and_return([])
+      File.stub(:open).and_return([])
       Mycmd::ConfigCommands.start(["cat"])
     end
 
