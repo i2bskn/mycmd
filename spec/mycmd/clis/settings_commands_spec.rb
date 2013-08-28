@@ -2,35 +2,46 @@ require "spec_helper"
 
 describe Mycmd::SettingsCommands do
   describe "#search" do
-    it "should print result" do
+    let(:args) {["search", "param_name"]}
+    let(:conn_mock) do
       mock = double("connection mock")
-      mock.should_receive(:query).and_return(create_result)
-      Mycmd::Configuration.should_receive(:connect).and_return(mock)
+      mock.stub(:query).and_return(create_result)
+      mock
+    end
+
+    before {Mycmd::Configuration.stub(:connect).and_return(conn_mock)}
+
+    after do
       expect(
         capture(:stdout) {
-          Mycmd::SettingsCommands.start(["search", "param_name"])
+          Mycmd::SettingsCommands.start(args)
         }
       ).not_to be_nil
     end
 
     it "should call Configuration.connect" do
-      mock = double("connection mock")
-      mock.should_receive(:query).and_return(create_result)
-      Mycmd::Configuration.should_receive(:connect).and_return(mock)
-      Mycmd::Printer.any_instance.stub(:print)
-      expect {
-        Mycmd::SettingsCommands.start(["search", "param_name"])
-      }.not_to raise_error
+      Mycmd::Configuration.should_receive(:connect).and_return(conn_mock)
+    end
+
+    it "should create Printer object" do
+      Mycmd::Printer.should_receive(:new).and_return(double.as_null_object)
     end
 
     it "should call Printer#print" do
-      mock = double("connection mock")
-      mock.should_receive(:query).and_return(create_result)
-      Mycmd::Configuration.stub(:connect).and_return(mock)
       Mycmd::Printer.any_instance.should_receive(:print)
-      expect {
-        Mycmd::SettingsCommands.start(["search", "param_name"])
-      }.not_to raise_error
+    end
+  end
+
+  describe "#memories" do
+    let(:args){["memories"]}
+
+    it "returns expected threads" do
+      Mycmd::Configuration.stub(:get_variables).and_return(create_variables)
+      expect(
+        capture(:stdout) {
+          Mycmd::SettingsCommands.start(args)
+        }
+      ).not_to be_nil
     end
   end
 end
