@@ -53,21 +53,21 @@ describe Mycmd::Configuration do
   end
 
   describe "#reset" do
-    it "should load yaml file" do
-      Mycmd::Configuration.should_receive(:config_find).and_return(conf_file)
-      Mycmd::Configuration.any_instance.should_receive(:merge)
-      YAML.should_receive(:load_file).with(conf_file)
+    after do
       expect {
         Mycmd::Configuration.new
       }.not_to raise_error
     end
 
+    it "should load yaml file" do
+      Mycmd::Configuration.should_receive(:config_find).and_return(conf_file)
+      Mycmd::Configuration.any_instance.should_receive(:merge)
+      YAML.should_receive(:load_file).with(conf_file)
+    end
+
     it "should call #default if config not found" do
       Mycmd::Configuration.should_receive(:config_find).and_return(nil)
       Mycmd::Configuration.any_instance.should_receive(:default)
-      expect {
-        Mycmd::Configuration.new
-      }.not_to raise_error
     end
   end
 

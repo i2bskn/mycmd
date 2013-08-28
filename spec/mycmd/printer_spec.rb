@@ -26,28 +26,25 @@ describe Mycmd::Printer do
   end
 
   describe "#print" do
-    it "should call #set_width" do
-      printer.send(:set_width)
-      Mycmd::Printer.any_instance.should_receive(:set_width)
-      Mycmd::Printer.any_instance.stub(:print_line).and_return(nil)
+    after do
       expect {
         printer.print
       }.not_to raise_error
     end
 
+    it "should call #set_width" do
+      printer.send(:set_width)
+      Mycmd::Printer.any_instance.should_receive(:set_width)
+      Mycmd::Printer.any_instance.stub(:print_line).and_return(nil)
+    end
+
     it "should call #print_line" do
       Mycmd::Printer.any_instance.should_receive(:print_line).exactly(3)
-      expect {
-        printer.print
-      }.not_to raise_error
     end
 
     it "should not call #print_line if each method not found" do
       Mycmd::Printer.any_instance.should_not_receive(:print_line)
       result.should_receive(:respond_to?).and_return(false)
-      expect{
-        printer.print
-      }.not_to raise_error
     end
   end
 
