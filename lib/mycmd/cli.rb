@@ -2,12 +2,14 @@
 
 require "mycmd/clis/config_commands"
 require "mycmd/clis/settings_commands"
+require "mycmd/clis/status_commands"
 
 module Mycmd
   class CLI < Thor
     default_command :console
     register(ConfigCommands, "config", "config [COMMAND]", "commands for config")
     register(SettingsCommands, "settings", "settings [COMMAND]", "commands for settings")
+    register(StatusCommands, "status", "status [COMMAND]", "commands for status")
 
     desc "console", "console will start sql shell."
     def console

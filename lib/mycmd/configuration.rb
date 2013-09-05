@@ -68,7 +68,7 @@ module Mycmd
       end
 
       def get_variables
-        sql = "SELECT * FROM INFORMATION_SCHEMA.GLOBAL_VARIABLES"
+        sql = "SELECT GV.* FROM INFORMATION_SCHEMA.GLOBAL_VARIABLES AS GV"
         client = self.connect
         variables = {}
         client.query(sql).each do |row|
