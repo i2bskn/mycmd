@@ -3,20 +3,15 @@ require "spec_helper"
 describe Mycmd::SettingsCommands do
   describe "#search" do
     let(:args) {["search", "param_name"]}
-    let(:conn_mock) do
-      mock = double("connection mock")
-      mock.stub(:query).and_return(create_result)
-      mock
+    let(:conn_mock) {double("connection mock")}
+
+    before do
+      conn_mock.stub(:query).and_return(create_result)
+      Mycmd::Configuration.stub(:connect).and_return(conn_mock)
     end
 
-    before {Mycmd::Configuration.stub(:connect).and_return(conn_mock)}
-
     after do
-      expect(
-        capture(:stdout) {
-          Mycmd::SettingsCommands.start(args)
-        }
-      ).not_to be_nil
+      expect(capture(:stdout){Mycmd::SettingsCommands.start(args)}).not_to be_nil
     end
 
     it "should call Configuration.connect" do
@@ -37,11 +32,7 @@ describe Mycmd::SettingsCommands do
     before {Mycmd::Configuration.stub(:get_variables).and_return(create_variables)}
 
     after do
-      expect(
-        capture(:stdout) {
-          Mycmd::SettingsCommands.start(args)
-        }
-      ).not_to be_nil
+      expect(capture(:stdout){Mycmd::SettingsCommands.start(args)}).not_to be_nil
     end
 
     it "should call Configuration.#get_variables" do
