@@ -16,5 +16,12 @@ module Mycmd
       printer = Printer.new(client.query(sql), true)
       printer.print
     end
+
+    desc "qcache_hit_rate", "qcache_hit_rate will print query cache hit rate"
+    def qcache_hit_rate
+      client = Configuration.connect
+      rate = client.query("SELECT IFNULL((SELECT (SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'QCACHE_HITS')/(SELECT SUM(G.VARIABLE_VALUE) FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME IN ('QCACHE_HITS','QCACHE_INSERTS','QCACHE_NOT_CACHED')) * 100), 0) AS qcache_hit_rate")
+      puts "#{rate.first['qcache_hit_rate']} %"
+    end
   end
 end
