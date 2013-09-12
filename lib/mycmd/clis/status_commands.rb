@@ -20,25 +20,24 @@ module Mycmd
     desc "qcache_hit_rate", "qcache_hit_rate will print query cache hit rate"
     def qcache_hit_rate
       client = Configuration.connect
-      rate = client.query("SELECT (SELECT (SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'QCACHE_HITS')/(SELECT SUM(G.VARIABLE_VALUE) FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME IN ('QCACHE_HITS','QCACHE_INSERTS','QCACHE_NOT_CACHED')) * 100) AS qcache_hit_rate")
-      if rate.nil?
-        rate = "\e[31munknown\e[m"
-      else
-        rate = rate.first["qcache_hit_rate"]
-        rate = rate >= 20 ? "\e[32m#{rate} %\e[m" : "\e[31m#{rate} %\e[m"
-      end
-      puts rate
+      rate = client.query("SELECT (SELECT (SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'QCACHE_HITS')/(SELECT SUM(G.VARIABLE_VALUE) FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME IN ('QCACHE_HITS','QCACHE_INSERTS','QCACHE_NOT_CACHED')) * 100) AS rate")
+      print_rate(rate, 20)
     end
 
     desc "innodb_buffer_hit_rate", "innodb_buffer_hit_rate will print buffer hit rate"
     def innodb_buffer_hit_rate
       client = Configuration.connect
-      rate = client.query("SELECT (1 - ((SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'INNODB_BUFFER_POOL_READS')/(SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'INNODB_BUFFER_POOL_READ_REQUESTS'))) * 100 AS innodb_buffer_hit_rate")
+      rate = client.query("SELECT (1 - ((SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'INNODB_BUFFER_POOL_READS')/(SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'INNODB_BUFFER_POOL_READ_REQUESTS'))) * 100 AS rate")
+      print_rate(rate, 90)
+    end
+
+    private
+    def print_rate(rate, threshold)
       if rate.nil?
         rate = "\e[31munknown\e[m"
       else
-        rate = rate.first["innodb_buffer_hit_rate"]
-        rate = rate >= 90 ? "\e[32m#{rate} %\e[m" : "\e[31m#{rate} %\e[m"
+        rate = rate.first["rate"]
+        rate = rate >= threshold ? "\e[32m#{rate} %\e[m" : "\e[31m#{rate} %\e[m"
       end
       puts rate
     end

@@ -56,7 +56,7 @@ describe Mycmd::StatusCommands do
     end
 
     it "should output the query cache hit rate" do
-      conn_mock.should_receive(:query).with("SELECT (SELECT (SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'QCACHE_HITS')/(SELECT SUM(G.VARIABLE_VALUE) FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME IN ('QCACHE_HITS','QCACHE_INSERTS','QCACHE_NOT_CACHED')) * 100) AS qcache_hit_rate").and_return(double.as_null_object)
+      conn_mock.should_receive(:query).with("SELECT (SELECT (SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'QCACHE_HITS')/(SELECT SUM(G.VARIABLE_VALUE) FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME IN ('QCACHE_HITS','QCACHE_INSERTS','QCACHE_NOT_CACHED')) * 100) AS rate").and_return(double.as_null_object)
     end
 
     it "should output red color of char if rate is unknown" do
@@ -65,12 +65,12 @@ describe Mycmd::StatusCommands do
     end
 
     it "should output red color of char if rate < 20" do
-      conn_mock.should_receive(:query).and_return([{'qcache_hit_rate' => 10}])
+      conn_mock.should_receive(:query).and_return([{'rate' => 10}])
       expect(capture(:stdout){Mycmd::StatusCommands.start(args)}).to eq("\e[31m10 %\e[m\n")
     end
 
     it "should output green color of char if rate >= 20" do
-      conn_mock.should_receive(:query).and_return([{'qcache_hit_rate' => 20}])
+      conn_mock.should_receive(:query).and_return([{'rate' => 20}])
       expect(capture(:stdout){Mycmd::StatusCommands.start(args)}).to eq("\e[32m20 %\e[m\n")
     end
   end
@@ -92,7 +92,7 @@ describe Mycmd::StatusCommands do
     end
 
     it "should output the innodb buffer hit rate" do
-      conn_mock.should_receive(:query).with("SELECT (1 - ((SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'INNODB_BUFFER_POOL_READS')/(SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'INNODB_BUFFER_POOL_READ_REQUESTS'))) * 100 AS innodb_buffer_hit_rate").and_return(double.as_null_object)
+      conn_mock.should_receive(:query).with("SELECT (1 - ((SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'INNODB_BUFFER_POOL_READS')/(SELECT G.VARIABLE_VALUE FROM INFORMATION_SCHEMA.GLOBAL_STATUS AS G WHERE G.VARIABLE_NAME = 'INNODB_BUFFER_POOL_READ_REQUESTS'))) * 100 AS rate").and_return(double.as_null_object)
     end
 
     it "should output red color of char if rate is unknown" do
@@ -101,12 +101,12 @@ describe Mycmd::StatusCommands do
     end
 
     it "should output red color of char if rate < 90" do
-      conn_mock.should_receive(:query).and_return([{'innodb_buffer_hit_rate' => 80}])
+      conn_mock.should_receive(:query).and_return([{'rate' => 80}])
       expect(capture(:stdout){Mycmd::StatusCommands.start(args)}).to eq("\e[31m80 %\e[m\n")
     end
 
     it "should output green color of char if rate >= 90" do
-      conn_mock.should_receive(:query).and_return([{'innodb_buffer_hit_rate' => 90}])
+      conn_mock.should_receive(:query).and_return([{'rate' => 90}])
       expect(capture(:stdout){Mycmd::StatusCommands.start(args)}).to eq("\e[32m90 %\e[m\n")
     end
   end
