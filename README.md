@@ -21,6 +21,10 @@ Or install it yourself as:
 
     $ gem install mycmd
 
+Or clone from Github:
+
+    $ git clone https://github.com/i2bskn/mycmd.git
+
 ## Settings
 
 Create settings file:
