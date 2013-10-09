@@ -6,8 +6,13 @@ module Mycmd
     attr_accessor :result, :header, :width
     
     def initialize(result, header=false)
-      @result = result.is_a?(Mysql2::Result) ? result_to_array(result) : result
-      @header = result.is_a?(Mysql2::Result) ? result.fields : header
+      @header = header
+      if result.is_a? Mysql2::Result
+        @result = result_to_array(result)
+        @header = result.fields if @header
+      else
+        @result = result
+      end
     end
 
     def print

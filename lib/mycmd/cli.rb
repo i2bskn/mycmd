@@ -30,17 +30,12 @@ module Mycmd
 
     desc 'query "[SQL]"', "query will execute sql."
     def query(sql)
-      client = Configuration.connect
-      printer = Printer.new(client.query(sql), true)
-      printer.print
+      Client.query(sql).print
     end
 
-    desc 'tasks [TASK NAME]', "tasks will execute register sql."
+    desc 'tasks [TASK NAME]p', "tasks will execute register sql."
     def tasks(task)
-      config = Configuration.new
-      client = config.connect
-      printer = Printer.new(client.query(config.tasks[task.to_s]), true)
-      printer.print
+      Client.execute_task(task).print
     end
   end
 end

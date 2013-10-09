@@ -12,9 +12,7 @@ module Mycmd
       else
         sql = "SELECT T.TABLE_NAME, CAST(((T.DATA_LENGTH+T.INDEX_LENGTH)/1024/1024) AS CHAR) AS SIZE_MB FROM INFORMATION_SCHEMA.TABLES AS T WHERE T.TABLE_SCHEMA = '#{options['database']}' UNION SELECT 'all_tables', CAST((SUM(T.DATA_LENGTH+T.INDEX_LENGTH)/1024/1024) AS CHAR) FROM INFORMATION_SCHEMA.TABLES AS T WHERE T.TABLE_SCHEMA = '#{options['database']}'"
       end
-      client = Configuration.connect
-      printer = Printer.new(client.query(sql), true)
-      printer.print
+      Client.query(sql).print
     end
 
     desc "qcache_hit_rate", "qcache_hit_rate will print query cache hit rate"

@@ -4,38 +4,38 @@ describe Mycmd::StatusCommands do
   let(:conn_mock) {double("connection mock")}
 
   describe "#size" do
-    let(:ptr_mock) {double("printer mock").as_null_object}
-
-    before do
-      conn_mock.stub(:query).and_return(create_result)
-      Mycmd::Configuration.stub(:connect).and_return(conn_mock)
-      Mycmd::Printer.stub(:new).and_return(ptr_mock)
-    end
+    let(:client) {double("Mycmd::Client Mock").as_null_object}
 
     context "with not arguments" do
       let(:args) {["size"]}
+      let(:sql) {"SELECT T.TABLE_SCHEMA, CAST((SUM(T.DATA_LENGTH+T.INDEX_LENGTH)/1024/1024) AS CHAR) AS SIZE_MB FROM INFORMATION_SCHEMA.TABLES AS T GROUP BY T.TABLE_SCHEMA UNION SELECT 'all_databases', CAST((SUM(T.DATA_LENGTH+T.INDEX_LENGTH)/1024/1024) AS CHAR) FROM INFORMATION_SCHEMA.TABLES AS T"}
+
       after {Mycmd::StatusCommands.start(args)}
 
-      it "should call Configuration.#connect" do
-        Mycmd::Configuration.should_receive(:connect).and_return(conn_mock)
+      it "should call Mycmd::Client.#query" do
+        Mycmd::Client.should_receive(:query).with(sql).and_return(client)
       end
 
-      it "should create Printer object" do
-        Mycmd::Printer.should_receive(:new).and_return(ptr_mock)
-      end
-
-      it "should call Printer#print" do
-        ptr_mock.should_receive(:print)
-      end
-
-      it "should output the size of all databases" do
-        conn_mock.should_receive(:query).with("SELECT T.TABLE_SCHEMA, CAST((SUM(T.DATA_LENGTH+T.INDEX_LENGTH)/1024/1024) AS CHAR) AS SIZE_MB FROM INFORMATION_SCHEMA.TABLES AS T GROUP BY T.TABLE_SCHEMA UNION SELECT 'all_databases', CAST((SUM(T.DATA_LENGTH+T.INDEX_LENGTH)/1024/1024) AS CHAR) FROM INFORMATION_SCHEMA.TABLES AS T")
+      it "should call Mycmd::Client#print" do
+        client.should_receive(:print)
+        Mycmd::Client.stub(:query).and_return(client)
       end
     end
 
-    it "should output the size of all tables" do
-      conn_mock.should_receive(:query).with("SELECT T.TABLE_NAME, CAST(((T.DATA_LENGTH+T.INDEX_LENGTH)/1024/1024) AS CHAR) AS SIZE_MB FROM INFORMATION_SCHEMA.TABLES AS T WHERE T.TABLE_SCHEMA = 'some_db' UNION SELECT 'all_tables', CAST((SUM(T.DATA_LENGTH+T.INDEX_LENGTH)/1024/1024) AS CHAR) FROM INFORMATION_SCHEMA.TABLES AS T WHERE T.TABLE_SCHEMA = 'some_db'")
-      Mycmd::StatusCommands.start(["size", "-d", "some_db"])
+    context "with arguments" do
+      let(:args) {["size", "-d", "some_db"]}
+      let(:sql) {"SELECT T.TABLE_NAME, CAST(((T.DATA_LENGTH+T.INDEX_LENGTH)/1024/1024) AS CHAR) AS SIZE_MB FROM INFORMATION_SCHEMA.TABLES AS T WHERE T.TABLE_SCHEMA = 'some_db' UNION SELECT 'all_tables', CAST((SUM(T.DATA_LENGTH+T.INDEX_LENGTH)/1024/1024) AS CHAR) FROM INFORMATION_SCHEMA.TABLES AS T WHERE T.TABLE_SCHEMA = 'some_db'"}
+
+      after {Mycmd::StatusCommands.start(args)}
+
+      it "should call Mycmd::Client.#query" do
+        Mycmd::Client.should_receive(:query).with(sql).and_return(client)
+      end
+
+      it "should call Mycmd::Client#print" do
+        client.should_receive(:print)
+        Mycmd::Client.stub(:query).and_return(client)
+      end
     end
   end
 

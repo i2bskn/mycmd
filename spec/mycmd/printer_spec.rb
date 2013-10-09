@@ -5,23 +5,36 @@ describe Mycmd::Printer do
   let(:printer) {Mycmd::Printer.new(result)}
 
   describe "#initialize" do
-    it "should set specified result" do
-      expect(printer.result).to eq(result)
+    context "without header" do
+      let(:printer) {Mycmd::Printer.new(result)}
+
+      it "should set specified result" do
+        expect(printer.result).to eq(result)
+      end
+
+      it "should set default header flug" do
+        expect(printer.header).to be_false
+      end
     end
 
-    it "should set default header flug" do
-      expect(printer.header).to be_false
-    end
+    context "with header" do
+      let(:printer) {Mycmd::Printer.new(result, true)}
 
-    it "should set specified header flug" do
-      printer = Mycmd::Printer.new(result, true)
-      expect(printer.header).to be_true
-    end
+      it "should set specified header flug" do
+        expect(printer.header).to be_true
+      end
 
-    it "should generate exception if not specified arguments" do
-      expect {
-        Mycmd::Printer.new
-      }.to raise_error
+      it "should call Printer#result_to_array" do
+        result.should_receive(:is_a?).and_return(true)
+        Mycmd::Printer.any_instance.should_receive(:result_to_array).and_return(result)
+        printer
+      end
+
+      it "should call result#fields if header is true" do
+        result.should_receive(:is_a?).and_return(true)
+        result.should_receive(:fields)
+        printer
+      end
     end
   end
 

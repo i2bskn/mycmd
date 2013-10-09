@@ -1,6 +1,8 @@
 require "spec_helper"
 
 describe Mycmd::CLI do
+  let(:client) {double("client mock").as_null_object}
+
   let(:conn_mock) {double("connection mock").as_null_object}
   let(:printer_mock) {double("printer mock").as_null_object}
 
@@ -31,10 +33,7 @@ describe Mycmd::CLI do
   end
 
   describe "#query" do
-    before do
-      Mycmd::Configuration.stub(:connect).and_return(conn_mock)
-      Mycmd::Printer.stub(:new).and_return(printer_mock)
-    end
+    before {Mycmd::Client.stub(:query).and_return(client)}
 
     after do
       expect {
@@ -42,48 +41,30 @@ describe Mycmd::CLI do
       }.not_to raise_error
     end
 
-    it "should call Configuration.connect" do
-      Mycmd::Configuration.should_receive(:connect).and_return(conn_mock)
+    it "should call Client.#query" do
+      Mycmd::Client.should_receive(:query).and_return(client)
     end
 
-    it "should create Printer object" do
-      Mycmd::Printer.should_receive(:new).with(conn_mock, true).and_return(printer_mock)
-    end
-
-    it "should call Printer#print" do
-      printer_mock.should_receive(:print)
+    it "should call Client#print" do
+      client.should_receive(:print)
     end
   end
 
   describe "#tasks" do
-    let(:config_mock) {double("configuration mock").as_null_object}
-
-    before do
-      config_mock.stub(:connect).and_return(conn_mock)
-      Mycmd::Configuration.stub(:new).and_return(config_mock)
-      Mycmd::Printer.stub(:new).and_return(printer_mock)
-    end
+    before {Mycmd::Client.stub(:execute_task).and_return(client)}
 
     after do
       expect {
-        Mycmd::CLI.start(["tasks", "some task"])
+        Mycmd::CLI.start(["tasks", "some_task"])
       }.not_to raise_error
     end
 
-    it "should create Configuration object" do
-      Mycmd::Configuration.should_receive(:new).and_return(config_mock)
+    it "should call Client.#execute_task" do
+      Mycmd::Client.should_receive(:execute_task).and_return(client)
     end
 
-    it "should call Configuration#connect" do
-      config_mock.should_receive(:connect).and_return(conn_mock)
-    end
-
-    it "should create Printer object" do
-      Mycmd::Printer.should_receive(:new).with(conn_mock, true).and_return(printer_mock)
-    end
-
-    it "should call Printer#print" do
-      printer_mock.should_receive(:print)
+    it "should call Client#print" do
+      client.should_receive(:print)
     end
   end
 end
