@@ -13,29 +13,30 @@ module Mycmd
 
     desc "console", "console will start sql shell."
     def console
-      raise "mysql not found" unless Kernel.system("which mysql > /dev/null")
-      conf = Configuration.new
-      cmd = conf.to_hash.inject(["mysql"]) do |c,(k,v)|
-        case k
-        when :host then c << "-h#{v}"
-        when :port then c << "-P#{v}"
-        when :username then c << "-u#{v}"
-        when :password then c << "-p#{v}"
-        when :database then c << v
-        end
+      begin
+        raise "mysql command not found" unless Kernel.system("which mysql > /dev/null")
+        Kernel.system(Client.command)
+      rescue => e
+        puts e.message
       end
-
-      Kernel.system(cmd.join(" "))
     end
 
     desc 'query "[SQL]"', "query will execute sql."
     def query(sql)
-      Client.query(sql).print
+      begin
+        Client.query(sql).print
+      rescue => e
+        puts e.message
+      end
     end
 
     desc 'tasks [TASK NAME]p', "tasks will execute register sql."
     def tasks(task)
-      Client.execute_task(task).print
+      begin
+        Client.execute_task(task).print
+      rescue => e
+        puts e.message
+      end
     end
   end
 end

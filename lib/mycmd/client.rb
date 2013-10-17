@@ -21,6 +21,18 @@ module Mycmd
       Printer.new(@result, header).print
     end
 
+    def command
+      @configuration.to_hash.inject(["mysql"]) do |c,(k,v)|
+        case k
+        when :host then c << "-h#{v}"
+        when :port then c << "-P#{v}"
+        when :username then c << "-u#{v}"
+        when :password then c << "-p#{v}"
+        when :database then c << v
+        end
+      end.join(" ")
+    end
+
     class << self
       def method_missing(action, *args)
         client = self.new

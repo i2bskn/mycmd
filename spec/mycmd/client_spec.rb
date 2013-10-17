@@ -82,6 +82,16 @@ describe Mycmd::Client do
     end
   end
 
+  describe "#command" do
+    before do
+      Mycmd::Configuration.stub(:new).and_return(create_configuration_mock)
+    end
+
+    it "should" do
+      expect(client.command).to eq("mysql -hlocalhost -uroot -psecret -P3306 sample")
+    end
+  end
+
   describe ".#method_missing" do
     before do
       connection.stub(:query)

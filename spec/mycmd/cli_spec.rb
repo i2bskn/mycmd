@@ -3,68 +3,88 @@ require "spec_helper"
 describe Mycmd::CLI do
   let(:client) {double("client mock").as_null_object}
 
-  let(:conn_mock) {double("connection mock").as_null_object}
-  let(:printer_mock) {double("printer mock").as_null_object}
-
   describe "#console" do
     let(:args) {["console"]}
-
-    before do
-      Mycmd::Configuration.stub(:config_find).and_return(nil)
-    end
+    before {Mycmd::Client.stub(:command)}
 
     it "should call Kernel.system" do
-      conf = Mycmd::Configuration.new
-      conf.password = "secret"
-      conf.database = "test"
-      Mycmd::Configuration.should_receive(:new).and_return(conf)
       Kernel.should_receive(:system).exactly(2).and_return(true)
       expect {
         Mycmd::CLI.start(args)
       }.not_to raise_error
     end
 
-    it "should generate exception if mysql command not found" do
-      Kernel.should_receive(:system).and_return(false)
-      expect {
-        Mycmd::CLI.start(args)
-      }.to raise_error
+    it "should print message if mysql command not found" do
+      Kernel.should_receive(:system).with("which mysql > /dev/null").exactly(1).and_return(false)
+      expect(
+        capture(:stdout){
+          Mycmd::CLI.start(args)
+        }.chomp
+      ).to eq("mysql command not found")
     end
   end
 
   describe "#query" do
-    before {Mycmd::Client.stub(:query).and_return(client)}
+    let(:args) {["query", "some sql"]}
 
-    after do
-      expect {
-        Mycmd::CLI.start(["query", "some sql"])
-      }.not_to raise_error
+    context "with execution of sql is successfull" do
+      after do
+        expect {
+          Mycmd::CLI.start(args)
+        }.not_to raise_error
+      end
+
+      it "should call Client.#query" do
+        Mycmd::Client.should_receive(:query).and_return(client)
+      end
+
+      it "should call Client#print" do
+        client.should_receive(:print)
+        Mycmd::Client.stub(:query).and_return(client)
+      end
     end
 
-    it "should call Client.#query" do
-      Mycmd::Client.should_receive(:query).and_return(client)
-    end
-
-    it "should call Client#print" do
-      client.should_receive(:print)
+    context "with execution of sql is failed" do
+      it "should print error message" do
+        Mycmd::Client.should_receive(:query).and_raise("some error")
+        expect(
+          capture(:stdout){
+            Mycmd::CLI.start(args)
+          }.chomp
+        ).to eq("some error")
+      end
     end
   end
 
   describe "#tasks" do
-    before {Mycmd::Client.stub(:execute_task).and_return(client)}
+    let(:args) {["tasks", "some_task"]}
 
-    after do
-      expect {
-        Mycmd::CLI.start(["tasks", "some_task"])
-      }.not_to raise_error
+    context "with execution of task is successfull" do
+      after do
+        expect {
+          Mycmd::CLI.start(args)
+        }.not_to raise_error
+      end
+
+      it "should call Client.#execute_task" do
+        Mycmd::Client.should_receive(:execute_task).and_return(client)
+      end
+
+      it "should call Client#print" do
+        client.should_receive(:print)
+        Mycmd::Client.stub(:execute_task).and_return(client)
+      end
     end
 
-    it "should call Client.#execute_task" do
-      Mycmd::Client.should_receive(:execute_task).and_return(client)
-    end
-
-    it "should call Client#print" do
-      client.should_receive(:print)
+    context "with execution of task is failed" do
+      it "should print error message" do
+        Mycmd::Client.should_receive(:execute_task).and_raise("some error")
+        expect(
+          capture(:stdout){
+            Mycmd::CLI.start(args)
+          }.chomp
+        ).to eq("some error")
+      end
     end
   end
 end

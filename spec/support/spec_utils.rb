@@ -13,6 +13,27 @@ module SpecUtils
     result
   end
 
+  def create_configuration_mock
+    configuration = double("Mycmd::Configuration Mock").as_null_object
+    configuration.stub(:to_hash).and_return(setting_variables)
+    configuration.stub(:connect).and_return(create_connection_mock)
+    configuration
+  end
+
+  def create_connection_mock
+    double("Mysql2::Client Mock").as_null_object
+  end
+
+  def setting_variables
+    {
+      host: "localhost",
+      username: "root",
+      password: "secret",
+      port: 3306,
+      database: "sample"
+    }
+  end
+
   def create_variables
     {
       innodb_buffer_pool_size: "268435456",
