@@ -31,11 +31,21 @@ module Mycmd
     end
 
     desc 'tasks [TASK NAME]p', "tasks will execute register sql."
-    def tasks(task)
-      begin
-        Client.execute_task(task).print
-      rescue => e
-        puts e.message
+    option :list, aliases: "-l", desc: "Display the tasks"
+    def tasks(task=nil)
+      if options[:list].nil?
+        begin
+          Client.execute_task(task).print
+        rescue => e
+          puts e.message
+        end
+      else
+        conf = Configuration.new
+        if conf.tasks.nil?
+          puts "task is not registered"
+        else
+          conf.tasks.each{|k,v| puts "#{k}:\t#{v}"}
+        end
       end
     end
   end

@@ -57,33 +57,60 @@ describe Mycmd::CLI do
   end
 
   describe "#tasks" do
-    let(:args) {["tasks", "some_task"]}
+    context "without list option" do
+      let(:args) {["tasks", "some_task"]}
 
-    context "with execution of task is successfull" do
-      after do
-        expect {
-          Mycmd::CLI.start(args)
-        }.not_to raise_error
+      context "with execution of task is successfull" do
+        after do
+          expect {
+            Mycmd::CLI.start(args)
+          }.not_to raise_error
+        end
+
+        it "should call Client.#execute_task" do
+          Mycmd::Client.should_receive(:execute_task).and_return(client)
+        end
+
+        it "should call Client#print" do
+          client.should_receive(:print)
+          Mycmd::Client.stub(:execute_task).and_return(client)
+        end
       end
 
-      it "should call Client.#execute_task" do
-        Mycmd::Client.should_receive(:execute_task).and_return(client)
-      end
-
-      it "should call Client#print" do
-        client.should_receive(:print)
-        Mycmd::Client.stub(:execute_task).and_return(client)
+      context "with execution of task is failed" do
+        it "should print error message" do
+          Mycmd::Client.should_receive(:execute_task).and_raise("some error")
+          expect(
+            capture(:stdout){
+              Mycmd::CLI.start(args)
+            }.chomp
+          ).to eq("some error")
+        end
       end
     end
 
-    context "with execution of task is failed" do
-      it "should print error message" do
-        Mycmd::Client.should_receive(:execute_task).and_raise("some error")
+    context "with list option" do
+      let(:configuration) {create_configuration_mock}
+      let(:args) {["tasks", "-l"]}
+
+      before {Mycmd::Configuration.should_receive(:new).and_return(configuration)}
+
+      it "should print message if tasks is not registered" do
+        configuration.should_receive(:tasks).and_return(nil)
         expect(
           capture(:stdout){
             Mycmd::CLI.start(args)
           }.chomp
-        ).to eq("some error")
+        ).to eq("task is not registered")
+      end
+
+      it "should print tasks" do
+        configuration.stub(:tasks).and_return({"key" => "value"})
+        expect(
+          capture(:stdout){
+            Mycmd::CLI.start(args)
+          }.chomp
+        ).to eq("key:\tvalue")
       end
     end
   end
