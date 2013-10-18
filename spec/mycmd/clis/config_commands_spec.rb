@@ -18,8 +18,8 @@ describe Mycmd::ConfigCommands do
       expect(
         capture(:stdout){
           Mycmd::ConfigCommands.start(args)
-        }
-      ).to eq("config not found\n")
+        }.chomp
+      ).to eq("config not found")
     end
 
     it "should print config path" do
@@ -28,31 +28,8 @@ describe Mycmd::ConfigCommands do
       expect(
         capture(:stdout){
           Mycmd::ConfigCommands.start(args)
-        }
-      ).to eq("#{config}\n")
-    end
-  end
-
-  describe "#edit" do
-    let(:args) {["edit"]}
-
-    it "should execute edit command" do
-      Mycmd::Configuration.stub(:config_find).and_return(".mycmd.yml")
-      Kernel.should_receive(:system).with("#{ENV['EDITOR']} .mycmd.yml")
-      Mycmd::ConfigCommands.start(args)
-    end
-
-    it "should generate exception if file not found" do
-      Mycmd::Configuration.stub(:config_find).and_return(nil)
-      expect {
-        Mycmd::ConfigCommands.start(args)
-      }.to raise_error(RuntimeError)
-    end
-
-    it "should call Configuration.config_find" do
-      Mycmd::Configuration.should_receive(:config_find).and_return(".mycmd.yml")
-      Kernel.stub(:system)
-      Mycmd::ConfigCommands.start(args)
+        }.chomp
+      ).to eq(config)
     end
   end
 
@@ -65,11 +42,38 @@ describe Mycmd::ConfigCommands do
       Mycmd::ConfigCommands.start(args)
     end
 
-    it "should generate exception if file not found" do
+    it "should print error message if file not found" do
       Mycmd::Configuration.stub(:config_find).and_return(nil)
-      expect {
-        Mycmd::ConfigCommands.start(args)
-      }.to raise_error(RuntimeError)
+      expect(
+        capture(:stdout){
+          Mycmd::ConfigCommands.start(args)
+        }.chomp
+      ).to eq("config not found")
+    end
+  end
+
+  describe "#edit" do
+    let(:args) {["edit"]}
+
+    it "should call Configuration.config_find" do
+      Mycmd::Configuration.should_receive(:config_find).and_return(".mycmd.yml")
+      Kernel.stub(:system)
+      Mycmd::ConfigCommands.start(args)
+    end
+
+    it "should execute edit command" do
+      Mycmd::Configuration.stub(:config_find).and_return(".mycmd.yml")
+      Kernel.should_receive(:system).with("#{ENV['EDITOR']} .mycmd.yml")
+      Mycmd::ConfigCommands.start(args)
+    end
+
+    it "should print error message if file not found" do
+      Mycmd::Configuration.stub(:config_find).and_return(nil)
+      expect(
+        capture(:stdout){
+          Mycmd::ConfigCommands.start(args)
+        }.chomp
+      ).to eq("config not found")
     end
   end
 end
