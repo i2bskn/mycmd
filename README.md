@@ -21,10 +21,6 @@ Or install it yourself as:
 
     $ gem install mycmd
 
-Or clone from Github:
-
-    $ git clone https://github.com/i2bskn/mycmd.git
-
 ## Settings
 
 Create settings file:
@@ -59,11 +55,11 @@ Execute sql:
 
 #### Config Commands
 
-Print current config file path:
+Display current config file path:
 
     $ mycmd config which
 
-Print current config:
+Display current config:
 
     $ mycmd config cat
 
@@ -76,6 +72,24 @@ Edit config file:
 Search settings:
 
     $ mycmd settings search innodb_buffer_pool_size
+
+Display memory related settings:
+
+    $ mycmd settings memories
+
+#### Status Commands
+
+Display database sizes:
+
+    $ mycmd status size
+
+Display query cache hit rate:
+
+    $ mycmd status qcache_hit_rate
+
+Display innodb buffer pool hit rate:
+
+    $ mycmd status innodb_buffer_hit_rate
 
 ## Contributing
 

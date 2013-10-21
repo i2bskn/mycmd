@@ -3,6 +3,7 @@ require "thor"
 require "mysql2"
 
 require "mycmd/version"
+require "mycmd/sql"
 require "mycmd/configuration"
 require "mycmd/printer"
 require "mycmd/client"

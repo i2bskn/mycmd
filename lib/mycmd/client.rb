@@ -2,6 +2,8 @@
 
 module Mycmd
   class Client
+    attr_reader :result
+    
     def initialize
       @configuration = Configuration.new
       @connection = @configuration.connect

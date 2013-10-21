@@ -1,8 +1,8 @@
 # coding: utf-8
 
-require "mycmd/clis/config_commands"
-require "mycmd/clis/settings_commands"
-require "mycmd/clis/status_commands"
+require "mycmd/cli/config_commands"
+require "mycmd/cli/settings_commands"
+require "mycmd/cli/status_commands"
 
 module Mycmd
   class CLI < Thor
